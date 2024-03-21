@@ -1,6 +1,25 @@
 import {json, redirect} from 'react-router-dom';
+
 import AuthForm from '../components/AuthForm';
 
+export function getTokenDuration(){
+  const storedExpirationDate = localStorage.getItem('expiration');
+  const expirationDate = new Date(storedExpirationDate);
+  const now = new Date();
+  const duration = expirationDate.getTime() - now.getTime();
+  return duration;
+}
+
+export function getAuthToken(){
+  const token = localStorage.getItem('token');
+
+  const tokenDuration = getTokenDuration();
+
+  if(tokenDuration < 0){
+    return 'EXPIRED';
+  }
+  return token;
+}
 function AuthenticationPage() {
   return <AuthForm />;
 }
@@ -37,6 +56,9 @@ export async function action({request}){
   const token = resData.token;
 
   localStorage.setItem('token', token);
-  
+  const expiration = new Date();
+  expiration.setHours(expiration.getHours() + 1);
+  localStorage.setItem('expiration', expiration.toISOString());
+
   return redirect('/');
 }
