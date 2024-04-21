@@ -20,7 +20,7 @@ function RootLayout() {
   
     setTimeout(() => {
    submit(null, {action: '/logout', method: 'post'})
-    },tokenDuration);
+    }, tokenDuration);
 
   }, [token, submit]);
 
